@@ -87,3 +87,6 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
+
+run: run ## run the main file
+	python ant_colony_optimisation/ant_colony_optimisation.py

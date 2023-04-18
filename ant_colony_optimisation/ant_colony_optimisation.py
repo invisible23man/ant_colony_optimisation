@@ -4,12 +4,18 @@ import numpy as np
 
 class AntColony:
     def __init__(self, distances, n_ants, n_iterations, decay=0.5, alpha=1, beta=1):
-        self.distances = distances
+        self.distances = distances.astype(float) # Convert all elements to float
         self.n_ants = n_ants
         self.n_iterations = n_iterations
-        self.decay = decay
+        self.decay = 1 - decay
         self.alpha = alpha
         self.beta = beta
+
+        # Find indices of zero elements
+        zero_indices = np.argwhere(self.distances == 0)
+
+        # Add 0.01 to zero elements
+        self.distances[zero_indices[:,0], zero_indices[:,1]] += 0.01
 
     def run(self):
         # Initialize pheromone trails
@@ -60,7 +66,7 @@ class Ant:
 
             # Calculate the probabilities of moving to each neighbor
             pheromone = self.pheromones[current_node]
-            distance = distances[current_node]
+            distance = distances[current_node] 
             probabilities = np.power(pheromone, self.alpha) * np.power(1 / distance, self.beta)
             probabilities /= probabilities.sum()
 
@@ -73,6 +79,7 @@ class Ant:
         return tour
 
 if __name__ == '__main__':
-    distances = np.array([[0, 2, 2, 5], [2, 0, 4, 1], [2, 4, 0, 3], [5, 1, 3, 0]])
+    # distances = np.array([[0, 2, 2, 5], [2, 0, 4, 1], [2, 4, 0, 3], [5, 1, 3, 0]])
+    distances = np.array([[3, 2, 2, 5], [2, 7, 4, 1], [2, 4, 2, 3], [5, 1, 3, 4]])
     colony = AntColony(distances=distances, n_ants=100, n_iterations=10)
-    colony.run()
+    print("Best tour: {0}".format(colony.run()))
